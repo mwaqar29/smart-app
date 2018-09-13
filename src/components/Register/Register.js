@@ -37,9 +37,15 @@ class Register extends React.Component {
 				if (user.id) {
 					this.props.loadUser(user);
 					this.props.onRouteChange('home');
-				}
+				} else
+					alert('Please fill out all the fields!');
 			})
 	}
+
+	handleKeyPress = (e) => {
+    	if (e.key === 'Enter')
+      		this.onSubmitSignUp()
+  	}
 
 	render() {
 		const { onRouteChange } = this.props;
@@ -71,7 +77,8 @@ class Register extends React.Component {
 			                    	   type="password"
 			                    	   name="password"
 			                    	   id="password"
-			                    	   onChange={ this.onPasswordChange }/>
+			                    	   onChange={ this.onPasswordChange }
+			                    	   onKeyPress={this.handleKeyPress}/>
 			                </div>
 			            </fieldset>
 			            <div className="">

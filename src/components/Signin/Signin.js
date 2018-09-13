@@ -31,9 +31,15 @@ class Signin extends React.Component {
 				if (user.id) {
 					this.props.loadUser(user);
 					this.props.onRouteChange('home');
-				}
+				} else
+					alert('Incorrect Email / Password!');
 			})
 	}
+
+	handleKeyPress = (e) => {
+    	if (e.key === 'Enter')
+      		this.onSubmitSignIn()
+  	}
 
 	render() {
 		const { onRouteChange } = this.props;
@@ -55,6 +61,7 @@ class Signin extends React.Component {
 			                <div className="mv3">
 			                    <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
 			                    <input
+				                    onKeyPress={this.handleKeyPress}
 			                    	className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
 			                    	type="password"
 			                    	name="password"

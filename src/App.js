@@ -17,29 +17,81 @@ const app = new Clarifai.App({
 const particleOptions = {
   particles: {
     number: {
-      value: 30,
+      value: 100,
       density: {
         enable: true,
-        value_area: 400
+        value_area: 800
       }
-    }
-  }
+    },
+    color: {
+      value: '#fff'
+    },
+    shape: {
+      type: 'circle',
+      stroke: {
+        width: 0,
+        color: '#000000'
+      },
+      polygon: {
+        nb_sides: 5
+      }
+    },
+    opacity: {
+      value: 0.5,
+      random: true,
+      anim: {
+        enable: false,
+        speed: 1,
+        opacity_min: 0.1,
+        sync: false
+      }
+    },
+    size: {
+      value: 10,
+      random: true,
+      anim: {
+        enable: false,
+        speed: 40,
+        size_min: 0.1,
+        sync: false
+      }
+    },
+    line_linked: {
+      enable: false,
+      distance: 500,
+      color: '#ffffff',
+      opacity: 0.4,
+      width: 2
+    },
+  },
+  interactivity: {
+    detect_on: 'canvas',
+    events: {
+      onresize: {
+        enable: true,
+        density_auto: true,
+        density_area: 400 // nb_particles = particles.nb * (canvas width *  canvas height / 1000) / density_area
+      },
+      resize: true
+    },
+  },
+  retina_detect: true
 }
 
 const initialState = {
   input: '',
-      imageUrl: '',
-      box: {},
-      route: 'signin',
-      isSignedIn: false,
-      user:
-      {
-        id: '',
-        name: '',
-        email: '',
-        entries: 0,
-        joined: ''
-      }
+  imageUrl: '',
+  box: {},
+  route: 'signin',
+  isSignedIn: false,
+  user:
+  {
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: ''
+  }
 }
 
 class App extends Component {
@@ -102,6 +154,10 @@ class App extends Component {
 
   onSubmit = () => {
     this.setState({imageUrl: this.state.input});
+    if (!this.state.input) {
+      alert('Please Enter an Image URL!')
+      return
+    }
     app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input) 
     .then(response => {
       if (response) {
@@ -121,6 +177,11 @@ class App extends Component {
       this.displayFaceBox(this.calculateFaceLocation(response));
     })
     .catch(err => console.log(err));
+  }
+
+  handleKeyPress = (e) => {
+    if (e.key === 'Enter')
+      this.onSubmit()
   }
 
   onRouteChange = (route) => {
@@ -144,7 +205,7 @@ class App extends Component {
           ? <div>
               <Logo />
               <Rank name={this.state.user.name} entries={this.state.user.entries}/>
-              <ImageLinkForm onInputChange={this.onInputChange} onSubmit={this.onSubmit}/>
+              <ImageLinkForm onInputChange={this.onInputChange} onSubmit={this.onSubmit} handleKeyPress={this.handleKeyPress}/>
               <FaceRecognition box={box} imageUrl={imageUrl}/>
             </div>
           : ( route === 'signin' || route === 'signout'
